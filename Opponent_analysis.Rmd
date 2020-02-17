@@ -1,0 +1,17 @@
+---
+title: "Opponent_analysis"
+author: "Zhuofei Xie"
+date: "2/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(MASS)
+```
+
+```{r}
+fullevents <- read.csv("fullevents.csv")
+fullevents
+```

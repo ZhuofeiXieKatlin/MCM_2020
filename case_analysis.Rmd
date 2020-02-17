@@ -1,0 +1,250 @@
+---
+title: "case_analysis"
+author: "Zhuofei Xie"
+date: "2/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mdsr)
+library(tidyverse)
+library(MASS)
+library(ggplot2)
+```
+
+
+```{r}
+Huskies_information <- read.csv("Huskie.csv")
+Huskies_information
+```
+
+
+```{r}
+HusikiesD1 <- lm(Above_average_pass_count ~ Huskies_D1, data = Huskies_information)
+summary(HusikiesD1)
+```
+
+
+```{r}
+HusikiesD2 <- lm(Above_average_pass_count ~ Huskies_D2, data = Huskies_information )
+summary(HusikiesD2)
+```
+
+```{r}
+HusikiesD3 <- lm(Above_average_pass_count ~ Huskies_D3, data = Huskies_information )
+summary(HusikiesD3)
+```
+
+```{r}
+HusikiesD4 <- lm(Above_average_pass_count ~ Huskies_D4, data = Huskies_information )
+summary(HusikiesD4)
+```
+
+```{r}
+HusikiesD5 <- lm(Above_average_pass_count ~ Huskies_D5, data = Huskies_information )
+summary(HusikiesD5)
+```
+
+```{r}
+HusikiesD7 <- lm(Above_average_pass_count ~ Huskies_D7, data = Huskies_information )
+summary(HusikiesD7)
+```
+
+```{r}
+HusikiesF1 <- lm(Above_average_pass_count ~ Huskies_F1, data = Huskies_information )
+summary(HusikiesF1)
+```
+
+```{r}
+HusikiesF2 <- lm(Above_average_pass_count ~ Huskies_F2, data = Huskies_information )
+summary(HusikiesF2)
+```
+
+```{r}
+HusikiesF4 <- lm(Above_average_pass_count ~ Huskies_F4, data = Huskies_information )
+summary(HusikiesF4)
+```
+
+
+
+```{r}
+HusikiesM1 <- lm(Above_average_pass_count ~ Huskies_M1, data = Huskies_information )
+summary(HusikiesM1)
+```
+
+```{r}
+HusikiesM3 <- lm(Above_average_pass_count ~ Huskies_M3, data = Huskies_information )
+summary(HusikiesM3)
+```
+
+```{r}
+HusikiesM4 <- lm(Above_average_pass_count ~ Huskies_M4, data = Huskies_information )
+summary(HusikiesM4)
+```
+
+
+```{r}
+par(mfrow = c(2,2))
+plot(Huskies_information$Huskies_D1, Huskies_information$Above_average_pass_count, ylab = "pass_count", xlab = "Huskies_D1") 
+abline(HusikiesD1)
+
+plot(Huskies_information$Huskies_D2, Huskies_information$Above_average_pass_count,  ylab = "pass_count", xlab = "Huskies_D2")
+abline(HusikiesD2)
+
+plot(Huskies_information$Huskies_D3, Huskies_information$Above_average_pass_count,  ylab = "pass_count", xlab = "Huskies_D3")
+abline(HusikiesD3)
+
+plot(Huskies_information$Huskies_D7, Huskies_information$Above_average_pass_count ,  ylab = "pass_count", xlab = "Huskies_D7") 
+abline(HusikiesD7)
+```
+
+```{r}
+par(mfrow = c(2,2))
+plot(Huskies_information$Huskies_F2, Huskies_information$Above_average_pass_count, ylab = "pass_count", xlab = "Huskies_F2")
+abline(HusikiesF2)
+
+plot(Huskies_information$Huskies_M1, Huskies_information$Above_average_pass_count, ylab = "pass_count", xlab = "Huskies_M1")
+abline(HusikiesM1)
+
+plot(Huskies_information$Huskies_M3, Huskies_information$Above_average_pass_count, ylab = "pass_count", xlab = "Huskies_M3")
+abline(HusikiesM3)
+```
+
+```{r}
+fullevents <- read.csv("fullevents_original.csv")
+fullevents
+```
+
+```{r}
+passing_1 <- read.csv("passing2.csv")
+passing_1
+```
+
+```{r}
+
+passing_1<- passing_1[-c(4)]
+```
+
+```{r}
+passing_1
+```
+
+
+```{r}
+index1 <- c(1:nrow(passing_1))
+index2 <- c(1:nrow(fullevents))*(0)
+```
+
+```{r}
+fullevents <- fullevents[-c(15)]
+fullevents
+```
+
+```{r}
+for(i in index1){
+  number = passing_1$position[i] - passing_1$Consecutive_passing[i] + 1
+  position = passing_1$position[i]
+  
+  index2[position] = passing_1$Consecutive_passing[i]
+  
+  
+}
+
+
+fullevents <- cbind(fullevents,index2)
+fullevents
+```
+
+```{r}
+index <- c(1:nrow(passing_1))
+index2 <- c(1:nrow(fullevents)) 
+passing_1
+```
+
+```{r}
+index <- c(1:nrow(passing_1))
+index2 <- c(1:nrow(fullevents)) 
+```
+
+```{r}
+fullevents 
+```
+
+```{r}
+for (i in index) {
+  number = passing_1$position[i] - passing_1$Consecutive_passing[i] + 1
+  point = passing_1$position[i]
+  for (j in c(number:point)){
+    if(j != point){
+      index2[j] = -1
+    }
+    index2[j] = passing_1$Consecutive_passing[i]
+  }
+}
+
+fullevents
+```
+
+```{r}
+fullevents
+```
+
+
+
+
+```{r}
+write.csv(fullevents, "fullevents_network.csv")
+```
+
+```{r}
+fullevents
+```
+```{r}
+fullevents <- fullevents[-c(16)]
+fullevents
+```
+
+
+```{r}
+Huskies_network <- fullevents %>% 
+  filter(index2 > 0)
+Huskies_network
+```
+
+```{r}
+result_Huskies <- Huskies_network %>%
+  filter(index2>=3)
+result_Huskies
+```
+```{r}
+write.csv(result_Huskies, "result_Huskies.csv")
+```
+
+```{r}
+
+```
+
+```{r}
+result <- as.vector(unlist(Huskies_network["index2"]))
+```
+
+```{r}
+index <- c(1:nrow(result_Huskies))
+index2 <- c(1:nrow(result_Huskies))*0
+sum = 0 
+for (i in index){
+  sum = sum + result_Huskies$index2[i]
+}
+sum
+average = sum/nrow(result_Huskies)
+average
+```
+
+
+
+
+
+
+
+

@@ -1,0 +1,29 @@
+---
+title: "Final"
+author: "Zhuofei Xie"
+date: "2/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+fullevents <- read.csv("fullevents_original.csv")
+fullevents
+```
+
+```{r}
+fullevents <- fullevents %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    count = n()
+  ) %>% 
+  arrange(OriginPlayerID)
+```
+
+```{r}
+fullevents
+```
+

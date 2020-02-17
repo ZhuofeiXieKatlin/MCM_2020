@@ -1,0 +1,217 @@
+---
+title: "ICM_D"
+author: "Zhuofei Xie"
+date: "2/13/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+```
+
+```{r}
+passingevents = read.csv("passingevents.csv")
+head(passingevents)
+```
+
+
+
+```{r}
+num_row = nrow(passingevents)
+num_row_array = c(1:num_row)
+passingevents_after_coord <- passingevents
+for(i in num_row_array) 
+  if(passingevents_after_coord$TeamID[i] != "Huskies"){
+    passingevents_after_coord$EventOrigin_x[i] = 100 - passingevents_after_coord$EventOrigin_x[i]
+    passingevents_after_coord$EventOrigin_y[i] = 100 - passingevents_after_coord$EventOrigin_y[i]
+    passingevents_after_coord$EventDestination_x[i] = 100 - passingevents_after_coord$EventDestination_x[i]
+    passingevents_after_coord$EventDestination_y[i] = 100 - passingevents_after_coord$EventDestination_y[i]
+  }
+head(passingevents_after_coord)
+```
+
+
+```{r}
+write.csv(passingevents_after_coord, file = "passingevents.csv")
+```
+
+
+```{r}
+fullevents <- read.csv("fullevents_original.csv")
+head(fullevents)
+```
+
+```{r}
+num_row = nrow(fullevents)
+num_row_array = c(1:num_row)
+fullevents_after_coord <- fullevents
+for(i in num_row_array) 
+  if(fullevents_after_coord$TeamID[i] != "Huskies"){
+    fullevents_after_coord$EventOrigin_x[i] = 100 - fullevents_after_coord$EventOrigin_x[i]
+    fullevents_after_coord$EventOrigin_y[i] = 100 - fullevents_after_coord$EventOrigin_y[i]
+    fullevents_after_coord$EventDestination_x[i] = 100 - fullevents_after_coord$EventDestination_x[i]
+    fullevents_after_coord$EventDestination_y[i] = 100 - fullevents_after_coord$EventDestination_y[i]
+  }
+head(fullevents_after_coord)
+```
+
+```{r}
+write.csv(fullevents_after_coord, file = "fullevents.csv")
+```
+
+```{r
+
+
+```{r}
+passingevents_MatchID_1 <- passingevents_after_coord %>% 
+  filter(MatchID==1)
+passingevents_MatchID_1
+```
+
+
+```{r}
+
+ggplot(data = passingevents_MatchID_1, aes(x = EventOrigin_x, y = EventOrigin_y, color = TeamID)) + geom_point()
+```
+
+```{r}
+passingevents_d1 <- read.csv("passingevents_d1.csv")
+head(passingevents_d1)
+passingevents_d1
+```
+
+MatchID == 1
+```{r}
+
+passingevents_d1_1 <- passingevents_d1 %>% 
+  filter(MatchID == 1) 
+head(passingevents_d1_1)
+```
+
+
+```{r}
+passingevents_d1_summary <- passingevents_d1_1 %>% 
+  group_by(EventSubType) %>% 
+  summarise(
+    Average_distace = mean(Passing.Distence)
+  )
+passingevents_d1_summary
+```
+
+```{r}
+passingevents_d1_1_corss <- passingevents_d1_1 %>% 
+  filter(EventSubType == "Cross" & Passing.Distence > passingevents_d1_summary$Average_distace[1])
+passingevents_d1_1_corss
+```
+
+```{r}
+passingevents_d1_1_HandPass <- passingevents_d1_1 %>% 
+  filter(EventSubType == "Hand pass" & Passing.Distence > passingevents_d1_summary$Average_distace[2])
+passingevents_d1_1_HandPass
+```
+
+```{r}
+passingevents_d1_1_HeadPass <- passingevents_d1_1 %>% 
+  filter(EventSubType == "Head pass" & Passing.Distence > passingevents_d1_summary$Average_distace[3])
+passingevents_d1_1_HeadPass
+```
+
+```{r}
+passingevents_d1_1_HighPass <- passingevents_d1_1 %>% 
+  filter(EventSubType == "High pass" & Passing.Distence > passingevents_d1_summary$Average_distace[4])
+passingevents_d1_1_HighPass
+```
+
+```{r}
+passingevents_d1_1_Launch <- passingevents_d1_1 %>% 
+  filter(EventSubType == "Launch" & Passing.Distence > passingevents_d1_summary$Average_distace[5])
+passingevents_d1_1_Launch
+```
+```{r}
+passingevents_d1_1_SimplePass <- passingevents_d1_1 %>% 
+  filter(EventSubType == "Simple pass" & Passing.Distence > passingevents_d1_summary$Average_distace[6])
+passingevents_d1_1_SimplePass
+```
+
+
+```{r}
+passingevents_d1_1_SmartPass <- passingevents_d1_1 %>% 
+  filter(EventSubType == "Smart pass" & Passing.Distence > passingevents_d1_summary$Average_distace[7])
+passingevents_d1_1_SmartPass
+```
+
+将单传和双传分成两个数据组
+```{r}
+passingevents_d1_1
+```
+
+```{r}
+names <- names(passingevents_d1_1)
+D1_single_pass <- data_frame()
+index = c(1:(nrow(passingevents_d1_1)-1))
+
+D1_single_pass
+```
+
+单传
+```{r}
+for(i in index){
+  if(i == 1){
+    if(passingevents_d1_1$DestinationPlayerID[i] != passingevents_d1_1$OriginPlayerID[i+1]){
+      D1_single_pass <- rbind(D1_single_pass,passingevents_d1_1[i,])
+    }
+  }
+  else{
+    if(passingevents_d1_1$DestinationPlayerID[i] != passingevents_d1_1$OriginPlayerID[i+1] && passingevents_d1_1$OriginPlayerID[i] != passingevents_d1_1$DestinationPlayerID[i-1]){
+      D1_single_pass <- rbind(D1_single_pass,passingevents_d1_1[i,])
+    }
+  }
+}
+D1_single_pass
+```
+
+```{r}
+drop_row <- 
+  D1_single_pass %>% select(X)
+
+vector_c <- as.vector(drop_row$X)
+```
+
+
+```{r}
+passingevents_d1_1[-vector_c,]
+```
+
+```{r}
+passingevents_d1_1
+```
+
+
+```{r}
+passingevents_d1
+```
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,46 @@
+---
+title: "Huskies_performance"
+author: "Zhuofei Xie"
+date: "2/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+MatchID_data <- read.csv("matches.csv")
+MatchID_data
+```
+
+```{r}
+Huskies_information <- read.csv("Huskies_performance.csv")
+Huskies_information_2 <- Huskies_information[-c(1,3)]
+```
+
+```{r}
+Huskies_information
+Huskies_information_2
+```
+
+```{r}
+write.csv(Huskies_information_2, "Huskie.csv")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

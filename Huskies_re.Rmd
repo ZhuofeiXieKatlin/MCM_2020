@@ -1,0 +1,71 @@
+---
+title: "Huskies_re"
+author: "Zhuofei Xie"
+date: "2/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(tidyverse)
+library(mdsr)
+library(dplyr)
+```
+
+```{r}
+Fullevents <- read.csv("Fullevents.csv")
+Fullevents
+```
+```{r}
+index_new <- c(1: nrow(Fullevents))
+```
+
+```{r}
+Fullevents <- cbind(Fullevents,index_new)
+```
+
+```{r}
+Fullevents
+```
+
+```{r}
+Fullevents <- Fullevents[-c(5)]
+```
+
+```{r}
+write.csv(Fullevents,"Fullevents.csv")
+```
+
+```{r}
+Fullevents <- read.csv("Fullevents.csv")
+```
+
+
+```{r}
+Fullevents
+```
+
+```{r}
+position <- c(1: nrow(Fullevents))
+```
+
+```{r}
+
+```
+
+```{r}
+
+index <- c(1:nrow(Fullevents)) 
+for (i in index) {
+  if(Fullevents$Consecutive_pass[i] != -1){
+    current_index <- index[i]
+    range_player <- c((current_index - Fullevents$Consecutive_pass[i])+1:current_index)
+    for (j in range_player) {
+      
+      position[i] <- paste(position[i],Fullevents$OriginPlayerID[j], sep = " ")
+    }
+  }
+}
+```
+

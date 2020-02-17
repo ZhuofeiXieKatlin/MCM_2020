@@ -1,0 +1,43 @@
+---
+title: "Graph_analysis"
+author: "Zhuofei Xie"
+date: "2/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tnet)
+library(mdsr)
+library(dplyr)
+```
+
+```{r}
+Huskies_graph <- read.csv("Result_Huskies_graph.csv") 
+Huskies_graph
+```
+
+```{r}
+Huskies_graph <- Huskies_graph[-c(1)]
+```
+
+```{r}
+Huskies_graph <- Huskies_graph %>% 
+  select(Opponent2_D2 : Opponent2_M5)
+Huskies_graph
+```
+
+
+```{r warning=FALSE}
+as.tnet(Huskies_graph)
+```
+
+```{r warning=FALSE}
+degree_w(net = as.tnet(Huskies_graph), measure = c("degree","output", "alpha"),alpha = 0.5, type="in" )
+```
+
+
+```{r warning= FALSE}
+betweenness_w(net = as.tnet(Huskies_graph), directed = NULL, alpha = 0.5)
+```
+

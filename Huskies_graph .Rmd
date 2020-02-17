@@ -1,0 +1,325 @@
+---
+title: "huskies_graph"
+author: "Zhuofei Xie"
+date: "2/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mdsr)
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+passingevents <- read.csv("passingevents.csv")
+passingevents
+```
+
+```{r}
+passingevents <- passingevents %>% 
+  filter(TeamID == "Huskies")
+```
+
+```{r}
+passingevents
+```
+
+
+```{r}
+passingevents_1_1H <- passingevents %>% 
+  filter(MatchID == 1) %>% 
+  filter(MatchPeriod == "1H") 
+```
+
+```{r}
+passingevents_1_1H
+```
+
+```{r}
+passingevents_1_1H_players <- passingevents_1_1H %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(OriginPlayerID)
+passingevents_1_1H_players
+```
+
+```{r}
+passingevents_1_1H_players <- passingevents_1_1H_players[-c(2)]
+```
+
+```{r}
+passingevents_1_1H_players
+```
+
+```{r}
+new_data <- data.frame(matrix(nrow = 11, ncol = 12))
+```
+
+```{r}
+new_data
+```
+
+
+```{r}
+new_1_1H <- cbind(passingevents_1_1H_players,new_data)
+```
+
+```{r}
+
+colnames(new_1_1H) <- c("PlayerID","Huskies_D1","Huskies_D2", "Huskies_D3","Huskies_D4", "Huskies_F1","Huskies_F2", "Huskies_F3","Huskies_G1","Huskies_M1", "Huskies_M2", "Huskies_M3")
+```
+
+```{r}
+new_1_1H
+```
+
+```{r}
+new_1_1H <- new_1_1H[-c(13)]
+```
+
+```{r}
+new_1_1H
+```
+
+
+```{r}
+c <- new_1_1H %>% 
+  select(PlayerID)
+```
+
+```{r}
+new_1_1H <- new_1_1H[-c(1)]
+```
+
+```{r}
+new_1_1H
+```
+
+```{r}
+new_1_1H[is.na(new_1_1H)] = 0
+```
+
+```{r}
+new_1_1H
+```
+
+```{r}
+new_1_1H <- cbind(c,new_1_1H)
+```
+
+```{r}
+write.csv(new_1_1H, "matrix.csv")
+```
+
+```{r}
+passingevents_1_1H <- passingevents_1_1H %>% 
+  select(OriginPlayerID, DestinationPlayerID)
+
+```
+
+```{r}
+passingevents_1_1H
+```
+
+```{r}
+index <- c(1:nrow(passingevents_1_1H))
+index1 <- c(1:nrow(passingevents_1_1H))
+index2 <- c(1: nrow(passingevents_1_1H))
+for (i in index) {
+  if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_D1") {
+    index1[i] = 1
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_D2"){
+    index1[i] = 2
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_D3"){
+    index1[i] = 3
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_D4"){
+    index1[i] = 4
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_F1"){
+    index1[i] = 5
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_F2"){
+    index1[i] = 6
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_F3"){
+    index1[i] = 7
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_G1"){
+    index1[i] = 8
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_M1"){
+    index1[i] = 9
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_M2"){
+    index1[i] = 10
+  }
+  else if(passingevents_1_1H$OriginPlayerID[i] == "Huskies_M3"){
+    index1[i] = 11
+  }
+  
+  if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_D1") {
+    index2[i] = 1
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_D2"){
+    index2[i] = 2
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_D3"){
+    index2[i] = 3
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_D4"){
+    index2[i] = 4
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_F1"){
+    index2[i] = 5
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_F2"){
+    index2[i] = 6
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_F3"){
+    index2[i] = 7
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_G1"){
+    index2[i] = 8
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_M1"){
+    index2[i] = 9
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_M2"){
+    index2[i] = 10
+  }
+  else if(passingevents_1_1H$DestinationPlayerID[i] == "Huskies_M3"){
+    index2[i] = 11
+  }
+}
+index1
+index2
+```
+
+
+```{r}
+passingevents_1_1H_after <- cbind(passingevents_1_1H, index1,index2)
+```
+
+```{r}
+passingevents_1_1H_after
+```
+```{r}
+new <- new_1_1H[-c(1)]
+```
+
+```{r}
+new
+```
+
+```{r}
+write.csv(new, "Huskies_1_H1")
+```
+
+```{r}
+Huskies_1_H1 <-  read.csv("Huskies_1_H1")
+```
+
+```{r}
+Huskies_1_H1 <- Huskies_1_H1[-c(1)]
+```
+
+```{r}
+Huskies_1_H1
+```
+```{r}
+passingevents_1_1H_after
+```
+
+```{r}
+Huskies_1_H1
+```
+
+```{r}
+index <- c(1:nrow(passingevents_1_1H_after)) 
+
+for (i in index) {
+  combination <- c(passingevents_1_1H_after$index1[i],passingevents_1_1H_after$index2[i])
+  Huskies_1_H1[combination[1], combination[2]] =  Huskies_1_H1[combination[1], combination[2]] + 1
+}
+```
+
+```{r}
+Huskies_1_H1
+
+```
+
+```{r}
+write.csv(Huskies_1_H1,"Huskies_graph.csv")
+```
+
+```{r}
+Huskies_1_H1
+```
+
+
+```{r}
+index1 <- c(1:nrow(Huskies_1_H1))
+index2 <- c(1:(ncol(Huskies_1_H1)))
+index2
+count = 0 
+```
+
+
+```{r}
+for (i in index1) {
+  for (j in index2) {
+    if(Huskies_1_H1[i,j] != 0){
+      count = count + 1
+    }
+  }
+}
+```
+
+```{r}
+count
+```
+
+```{r}
+average_pass <- nrow(passingevents_1_1H_after)/count
+```
+
+```{r}
+average_pass
+```
+
+```{r}
+Huskies_1_H1
+```
+
+```{r}
+index1 <- c(1:nrow(Huskies_1_H1))
+index2 <- c(1:(ncol(Huskies_1_H1)))
+```
+
+
+```{r}
+for (i in index1) {
+  for (j in index2) {
+    if(Huskies_1_H1[i,j] < 3){
+      Huskies_1_H1[i,j] = 0
+    }
+  }
+}
+```
+
+```{r}
+Huskies_1_H1
+```
+
+```{r}
+write.csv(Huskies_1_H1, "Result_Huskies_graph.csv")
+```
+
+

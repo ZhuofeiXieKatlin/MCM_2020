@@ -1,0 +1,307 @@
+---
+title: "Air_Duel"
+author: "Zhuofei Xie"
+date: "2/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mdsr)
+library(tidyverse)
+library(MASS)
+```
+
+
+```{r}
+fullevents <- read.csv("fullevents_original.csv")
+fullevents
+```
+```{r}
+fullevents
+```
+
+
+```{r}
+index = c(1:nrow(fullevents))
+passing = c(1:nrow(fullevents))
+passing <- passing*(-1)
+passing[1:6]
+```
+
+```{r}
+connection = 0 
+for (i in index){
+  if(fullevents$DestinationPlayerID[i] != ""){
+    connection = connection + 1
+  }else{
+    passing[i-1] = connection
+    connection = 0 
+  }
+}
+passing
+```
+
+```{r}
+for(i in index){
+  if(fullevents$TeamID[i] != "Huskies" | passing[i] <= 0){
+    passing[i] = NA
+  }
+}
+passing
+```
+
+```{r}
+write.csv(passing, file = "passing#.csv")
+```
+
+```{r}
+passing_1 <- read.csv("passing#.csv")
+passing_1
+```
+
+```{r}
+passing_1 <- na.omit(passing_1)
+passing_1
+```
+
+```{r}
+index <- c(1:nrow(passing_1))
+sum = 0
+for (i in index){
+  sum = sum + passing_1$x[i]
+}
+passing_1
+
+average = sum/nrow(passing_1)
+average
+```
+
+```{r}
+true_false <- c(1:nrow(passing_1))
+for (i in index){
+  if(passing_1$x[i] <= 7){
+    true_false[i] = NA
+  }else{
+    true_false[i] = "TRUE"
+  }
+}
+
+passing_1 <- cbind(passing_1, true_false)
+
+passing_1
+```
+
+```{r}
+passing_1 <- na.omit(passing_1)
+```
+
+```{r}
+
+names(passing_1)[1] <- "index"
+names(passing_1)[2] <- "Consecutive_passing" 
+names(passing_1)[3] <- "Above_average_passing"
+
+passing_1
+```
+
+```{r}
+passing_1
+```
+
+```{r}
+position <- passing_1$index
+
+passing_1 <- cbind(passing_1,position)
+
+passing_1
+```
+```{r}
+write.csv(passing_1, "passing2.csv")
+```
+
+
+```{r}
+index1 <- c(1:nrow(passing_1))
+index2 <- c(1:nrow(fullevents))*(0)
+for(i in index1){
+  number = passing_1$position[i] - passing_1$Consecutive_passing[i] + 1
+  position = passing_1$position[i]
+  for (j in c(number:position)){
+    index2[j] = passing_1$Consecutive_passing[i]
+  }
+}
+
+fullevents <- cbind(fullevents,index2)
+```
+
+
+```{r}
+fullevents
+```
+```{r}
+write.csv(fullevents, "fullevents.csv")
+```
+
+```{r}
+fullevents <- read.csv("fullevents.csv")
+fullevents
+```
+
+```{r}
+index <- c(1:nrow(fullevents))
+count <- c(1:nrow(fullevents))*(-1)
+
+above_7_consecutive_pass <- fullevents %>% 
+  filter(index2>0)
+```
+
+
+```{r}
+above_7_consecutive_pass
+```
+
+```{r}
+library(dplyr)
+above_7_consecutive_pass
+```
+
+
+```{r}
+individual_player_performance <- above_7_consecutive_pass %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Number_pass = n()
+  ) %>% 
+  arrange(desc(Number_pass))
+individual_player_performance
+
+```
+
+
+```{r}
+passing_1
+```
+
+```{r}
+fullevents
+```
+```{r}
+MatchID_data <- fullevents %>% 
+  group_by(MatchID) %>% 
+  summarise(
+    position = max(X)
+  )
+MatchID_data
+```
+
+```{r}
+count = c(1:nrow(MatchID_data))*0
+count_number = 0
+for (i in c(1:nrow(MatchID_data))) {
+  for (j in c(1:nrow(passing_1))) {
+    if(i == 1){
+      if(passing_1$position[j] <= MatchID_data$position[i]){
+        count[i] = count[i] + passing_1$Consecutive_passing[j]
+      }
+    }
+    
+    else if(passing_1$position[j] <= MatchID_data$position[i] & passing_1$position[j] > MatchID_data$position[i-1]){
+      count[i] = count[i] + passing_1$Consecutive_passing[j]
+    }
+  }
+}
+
+Huskies_information <- cbind(MatchID_data, count)
+
+Huskies_information
+```
+
+```{r}
+fullevents
+```
+
+```{r}
+Individual_participation <- fullevents %>% 
+  group_by(OriginPlayerID , MatchID) %>% 
+  summarise(
+    participation = n()
+  ) %>% 
+  arrange(desc(participation))
+Individual_participation
+```
+```{r}
+Huskies_Individual_participation <- Individual_participation %>% 
+  filter(str_detect(OriginPlayerID,"Huskies") )
+Huskies_Individual_participation
+```
+
+```{r}
+Huskies_Individual_participation_2 <- Huskies_Individual_participation %>% 
+  group_by(MatchID, OriginPlayerID) %>% 
+  summarise(
+    participation = participation
+  )
+Huskies_Individual_participation_2
+```
+```{r}
+Huskies_Individual_participation_2 <- Huskies_Individual_participation_2 %>% 
+  spread(OriginPlayerID,participation)
+```
+
+```{r}
+names(Huskies_information)[3] = "Above_average_pass_count"
+```
+
+```{r}
+Huskies_information
+```
+
+```{r}
+Huskies_information_2<- bind_cols(Huskies_information,Huskies_Individual_participation_2)
+```
+
+```{r}
+Huskies_information_2
+```
+```{r}
+write.csv(Huskies_information_2, "Huskies_performance.csv")
+```
+
+```{r}
+Huskies_information_2[-c(4)]
+```
+
+```{r}
+Huskies_information 
+```
+
+
+
+```{r}
+passing_1
+```
+
+
+```{r}
+index <- c(1:nrow(fullevents))
+
+position <- c(1:nrow(fullevents))
+for(i in index){
+  if(passing_1$position[i] == fullevents$X[i]){
+    position[i] = passing_1$Consecutive_passing[i]
+  }
+}
+
+position
+```
+
+
+
+
+
+
+
+
+
+

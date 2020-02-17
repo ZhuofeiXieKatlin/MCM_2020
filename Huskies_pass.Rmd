@@ -1,0 +1,160 @@
+---
+title: "Huskies_pass"
+author: "Zhuofei Xie"
+date: "2/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mdsr)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+matches <- read.csv("matches.csv")
+Huskies <- read.csv("Huskie.csv")
+```
+
+```{r}
+matches
+Huskies
+```
+
+```{r}
+Huskies_Score <- matches %>% 
+  select(OwnScore)
+Huskies_Score
+```
+
+```{r}
+Huskies_result <- Huskies %>% 
+  select(MatchID, Above_average_pass_count)
+Huskies_result
+```
+
+```{r}
+Huskies_result <- cbind(Huskies_result,Huskies_Score)
+```
+
+```{r}
+Huskies_result
+```
+
+```{r}
+Score <- lm(Above_average_pass_count ~ OwnScore, data = Huskies_result)
+summary(Score)
+```
+
+```{r}
+fullevents <- read.csv("fullevents(After Conversion, Changed Scale).csv")
+fullevents
+```
+
+```{r}
+fullevents_Goal_kick <- fullevents %>% 
+  filter(EventSubType == "Goal kick")
+fullevents_Goal_kick
+```
+```{r}
+fullevents
+```
+
+```{r}
+fullevents_Air_duel <- fullevents %>% 
+  filter(EventSubType == "Air duel")
+fullevents_Air_duel
+```
+
+
+```{r}
+fullevents_Air_duel <- fullevents_Air_duel %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(desc(Count))
+fullevents_Air_duel
+```
+
+
+```{r}
+fullevents_Ground_duel <- fullevents %>% 
+  filter(EventSubType == "Ground loose ball duel") %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(desc(Count))
+fullevents_Ground_duel
+```
+
+```{r}
+fullevents
+```
+
+```{r}
+fullevents_Throw_in <- fullevents %>% 
+  filter(EventSubType == "Throw in") %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(desc(Count))
+fullevents_Throw_in
+```
+
+```{r}
+fullevents
+```
+
+```{r}
+fullevents_Launch <- fullevents %>% 
+  filter(EventSubType == "Launch") %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(desc(Count))
+fullevents_Launch
+```
+
+```{r}
+fullevents
+```
+
+```{r}
+fullevents_Touch <- fullevents %>% 
+  filter(EventSubType == "Touch") %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(desc(Count))
+fullevents_Touch
+```
+
+```{r}
+fullevents_Ground_defending_duel <- fullevents %>% 
+  filter(EventSubType == "Ground defending duel") %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(desc(Count))
+fullevents_Ground_defending_duel
+```
+
+```{r}
+fullevents_Ground_attacking_duel <- fullevents %>% 
+  filter(EventSubType == "Ground attacking duel") %>% 
+  group_by(OriginPlayerID) %>% 
+  summarise(
+    Count = n()
+  ) %>% 
+  arrange(desc(Count))
+fullevents_Ground_attacking_duel
+```
+

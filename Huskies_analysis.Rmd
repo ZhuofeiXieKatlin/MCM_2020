@@ -1,0 +1,111 @@
+---
+title: "Huskies_analysis"
+author: "Zhuofei Xie"
+date: "2/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+library(MASS)
+library(mdsr)
+```
+
+```{r}
+fullevents <- read.csv("fullevents_original.csv")
+fullevents
+
+passing_1 <- read.csv("passing2.csv")
+passing_1
+```
+
+```{r}
+passing_1 <- passing_1 %>% 
+  filter(Consecutive_passing > 2)
+passing_1
+```
+
+```{r}
+index1 <- c(1:nrow(passing_1))
+index2 <- c(1:nrow(fullevents))*0
+```
+
+```{r}
+index2 <- c(1:nrow(fullevents))*0
+for (i in index1) {
+  number = passing_1$position[i] - passing_1$Consecutive_passing[i] + 1
+  point = passing_1$position[i]
+  for (j in c(number:point)){
+    if(j < point){
+      index2[j] = -1
+    }else{
+      index2[j] = passing_1$Consecutive_passing[i]
+    }
+  }
+}
+index2
+```
+
+```{r}
+fullevents
+```
+
+
+```{r}
+fullevents <- cbind(fullevents,index2)
+```
+
+
+
+```{r}
+
+fullevents <- fullevents[-c(14)]
+fullevents
+```
+
+```{r}
+fullevents <- cbind(fullevents,c(1:nrow(fullevents)))
+```
+
+```{r}
+names(fullevents)[14] <- "index"
+```
+
+```{r}
+names(fullevents)[13] = "Consecutive_pass"
+fullevents
+```
+
+```{r}
+fullevents <- fullevents %>% 
+  filter(Consecutive_pass != 0)
+fullevents
+```
+
+```{r}
+write.csv(fullevents, "Fullevents.csv")
+```
+
+```{r}
+Fullevents <- read.csv("Fullevents.csv")
+Fullevents
+```
+
+```{r}
+Fullevents
+```
+
+```{r}
+Fullevents_new <- Fullevents %>% 
+  select(TeamID)
+
+```
+
+
+
+
+
+
+
